@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser')
-var cors = require('cors')
-
+const cors = require('cors')
+const { errorHandler } = require('../api/middlewares/')
 const { userRoutes } = require('../api/routes')
 
 
@@ -10,6 +10,12 @@ module.exports = async (app) => {
     // app.use(cors())
     // app.use(errorHandler) //TODO
     userRoutes(app)
+
+    app.all('*', errorHandler.handleRouteErrors)
+    app.use(errorHandler.handleDuplicateKeyError)
+    app.use(errorHandler.globalHandler)
+
+
 
     app.get('/', async (req, res) => {
         res.send({ hello: 'world' })
